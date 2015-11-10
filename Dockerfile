@@ -43,7 +43,7 @@ ENV PATH $M2_HOME/bin:$PATH
 
 # Install Zeppelin
 RUN git checkout https://github.com/apache/incubator-zeppelin.git
-WORKDIR incubator-zeppelin
+WORKDIR /incubator-zeppelin
 RUN mvn clean package -Pspark-1.5.1 -Ppyspark -DskipTests
 RUN rm -rf .git
 WORKDIR /
