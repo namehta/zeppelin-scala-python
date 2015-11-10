@@ -6,7 +6,7 @@ RUN yum -y install epel-release
 RUN \
   yum -y update && \
   yum -y install python python-dev python-pip python-virtualenv tar \
-  gcc gcc-c++ python-devel hostname wget unzip git
+  gcc gcc-c++ python-devel hostname wget unzip git npm fontconfig
 
 # Install JDK 7 Update 75
 RUN wget -nv --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.rpm"
@@ -34,17 +34,41 @@ RUN python setup.py install
 WORKDIR /
 
 # Install Maven
-RUN wget -nv ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
-RUN tar -xzf apache-maven-3.0.5-bin.tar.gz
-RUN mv apache-maven-3.0.5 /opt/maven
-RUN rm -f apache-maven-3.0.5-bin.tar.gz
+RUN wget -nv ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
+RUN tar -xzf apache-maven-3.3.3-bin.tar.gz
+RUN mv apache-maven-3.3.3 /opt/maven
+RUN rm -f apache-maven-3.3.3-bin.tar.gz
 ENV M2_HOME /opt/maven
 ENV PATH $M2_HOME/bin:$PATH
+
+# Environment variables
+ENV PATH .:$PATH
+ENV SCALA_BINARY_VERSION 2.10
+ENV SCALA_VERSION $SCALA_BINARY_VERSION.4
+ENV SPARK_PROFILE 1.5
+ENV SPARK_VERSION 1.5.1
+ENV HADOOP_PROFILE 2.6
+ENV HADOOP_VERSION 2.7.1
 
 # Install Zeppelin
 RUN git clone https://github.com/apache/incubator-zeppelin.git
 WORKDIR /incubator-zeppelin
-RUN mvn clean package -Pspark-1.5.1 -Ppyspark -DskipTests
+RUN mvn clean \
+    install \
+    -pl '!flink,!geode,!ignite,!phoenix,!postgresql,!tajo' \
+    -Phadoop-$HADOOP_PROFILE \
+    -Dhadoop.version=$HADOOP_VERSION \
+    -Pspark-$SPARK_PROFILE \
+    -Dspark.version=$SPARK_VERSION \
+    -Ppyspark \
+    -Dscala.version=$SCALA_VERSION \
+    -Dscala.binary.version=$SCALA_BINARY_VERSION \
+    -Dmaven.findbugs.enable=false \
+    -Drat.skip=true \
+    -Dcheckstyle.skip=true \
+    -DskipTests \
+    "$@"
+
 RUN rm -rf .git
 WORKDIR /
 COPY incubator-zeppelin /opt/zeppelin

@@ -7,7 +7,7 @@ export ZEPPELIN_INTP_MEM="-Xmx"$rmaxjvm"m -XX:MaxPermSize=512m"
 echo ZEPPELIN_INTP_MEM=$ZEPPELIN_INTP_MEM
 
 rexemem=`expr $rmaxjvm - 1536`
-export SPARK_EXECUTOR_MEMORY=$rmaxjvm"m"
-echo SPARK_EXECUTOR_MEMORYM=$SPARK_EXECUTOR_MEMORY
+export ZEPPELIN_JAVA_OPTS="-Dspark.executor.memory="rexemem"m"
+echo ZEPPELIN_JAVA_OPTS=$ZEPPELIN_JAVA_OPTS
 
 /opt/zeppelin/bin/zeppelin.sh start
