@@ -1,6 +1,6 @@
 
 FROM centos
-MAINTAINER Nirav Mehta <niravmehta@deloitte.com>
+MAINTAINER Nirav Mehta <mehtanirav@live.com>
 
 RUN yum -y install epel-release
 RUN \
