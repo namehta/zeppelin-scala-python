@@ -38,8 +38,6 @@ RUN wget ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.0.5/binaries/apache
 RUN tar -xzf apache-maven-3.0.5-bin.tar.gz
 RUN mv apache-maven-3.0.5 /opt/maven
 RUN rm -f apache-maven-3.0.5-bin.tar.gz
-RUN echo export M2_HOME=/opt/maven >> /etc/profile.d/maven.sh
-RUN echo export PATH=$M2_HOME/bin:$PATH >> /etc/profile.d/maven.sh
 ENV M2_HOME /opt/maven
 ENV PATH $M2_HOME/bin:$PATH
 
@@ -54,6 +52,9 @@ ENV ZEPPELIN_HOME /opt/zeppelin
 ENV PYTHONPATH /usr/lib64/python2.7/site-packages:$PYTHONPATH
 ENV PYTHONPATH $SPARK_HOME/python/:$PYTHONPATH
 ENV PYTHONPATH $SPARK_HOME/python/lib/py4j-0.8.2.1-src.zip:$PYTHONPATH
+
+#Remove Maven
+RUN rm -rf /opt/maven
 
 EXPOSE 6080 6081
 
