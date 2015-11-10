@@ -9,7 +9,7 @@ RUN \
   gcc gcc-c++ python-devel hostname wget unzip git
 
 # Install JDK 7 Update 75
-RUN wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.rpm"
+RUN wget -nv --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.rpm"
 RUN rpm -ivh jdk-7u75-linux-x64.rpm
 RUN rm -f jdk-7u75-linux-x64.rpm
 RUN alternatives --install /usr/bin/java java /usr/java/jdk1.7.0_75/jre/bin/java 200000
@@ -18,7 +18,7 @@ RUN alternatives --install /usr/bin/javac javac /usr/java/jdk1.7.0_75/bin/javac 
 RUN alternatives --install /usr/bin/jar jar /usr/java/jdk1.7.0_75/bin/jar 200000
 
 # Install Spark
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-1.5.1-bin-hadoop2.6.tgz
+RUN wget -nv http://d3kbcqa49mib13.cloudfront.net/spark-1.5.1-bin-hadoop2.6.tgz
 RUN tar -xzf spark-1.5.1-bin-hadoop2.6.tgz
 RUN mv spark-1.5.1-bin-hadoop2.6 /opt/spark
 ENV SPARK_HOME /opt/spark
@@ -34,7 +34,7 @@ RUN python setup.py install
 WORKDIR /
 
 # Install Maven
-RUN wget ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
+RUN wget -nv ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
 RUN tar -xzf apache-maven-3.0.5-bin.tar.gz
 RUN mv apache-maven-3.0.5 /opt/maven
 RUN rm -f apache-maven-3.0.5-bin.tar.gz
@@ -42,7 +42,7 @@ ENV M2_HOME /opt/maven
 ENV PATH $M2_HOME/bin:$PATH
 
 # Install Zeppelin
-RUN git checkout https://github.com/apache/incubator-zeppelin.git
+RUN git clone https://github.com/apache/incubator-zeppelin.git
 WORKDIR /incubator-zeppelin
 RUN mvn clean package -Pspark-1.5.1 -Ppyspark -DskipTests
 RUN rm -rf .git
